@@ -1,0 +1,17 @@
+{
+    "name": "kodkvall-tieto-typescript-examples",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "example:chat": "tsx example_chat_complete.ts",
+        "typecheck": "tsc -p tsconfig.json --noEmit"
+    },
+    "dependencies": {
+        "@mistralai/mistralai": "*"
+    },
+    "devDependencies": {
+        "@types/node": "*",
+        "tsx": "*",
+        "typescript": "*"
+    }
+}
