@@ -1,0 +1,16 @@
+# Rust specific
+/target/
+**/*.rs.bk
+
+# Environment files
+.env
+*.env.local
+
+# IDE specific
+.idea/
+.vscode/
+
+# Common ignore patterns
+.DS_Store
+*.swp
+*.swo
