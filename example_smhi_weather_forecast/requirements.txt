@@ -1,0 +1,9 @@
+# Requirements for SMHI Weather Forecast Application
+#
+# Install with: pip install -r requirements.txt
+
+# SMHI Open Data API client
+smhi-open-data>=0.0.8
+
+# Mistral AI client for LLM calls
+mistralai>=0.0.1
