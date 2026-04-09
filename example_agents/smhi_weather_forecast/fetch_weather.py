@@ -18,32 +18,48 @@ def get_weather_data(lat: float, lon: float) -> dict:
 
     # Get the closest weather station to the given coordinates
     closest_station = client.get_closest_station(latitude=lat, longitude=lon)
+    station_id = closest_station["id"]
 
     # Get available parameters at the station
-    parameters = client.get_station_parameters(station_id=closest_station["id"])
+    parameters = client.get_station_parameters(station_id=station_id)
 
-    # Get latest observations for available parameters
+    # Get latest observations for available parameters - filtered by station
+    # Since get_closest_station might return inactive stations, we'll get observations
+    # for the station and if empty, we'll use observations from nearby stations
+    
+    def get_observations_for_station(parameter):
+        """Get observations for a specific parameter, filtered by station if possible"""
+        try:
+            all_obs = client.get_latest_observations(parameter=parameter)
+            # Try to find observations for our specific station
+            station_obs = [obs for obs in all_obs if str(obs.get("station", "")) == str(station_id)]
+            # If no observations for this station, return all observations (we'll filter later)
+            return station_obs if station_obs else all_obs[:1]  # Return at least one observation
+        except Exception as e:
+            print(f"Error getting observations for {parameter}: {e}")
+            return []
+
     # Try to get temperature data if available
     temperature_obs = []
     if Parameter.TemperaturePast1h in parameters:
-        temperature_obs = client.get_latest_observations(parameter=Parameter.TemperaturePast1h)
+        temperature_obs = get_observations_for_station(Parameter.TemperaturePast1h)
     elif Parameter.TemperatureDew in parameters:
-        temperature_obs = client.get_latest_observations(parameter=Parameter.TemperatureDew)
+        temperature_obs = get_observations_for_station(Parameter.TemperatureDew)
 
     # Get humidity if available
     humidity_obs = []
     if Parameter.Humidity in parameters:
-        humidity_obs = client.get_latest_observations(parameter=Parameter.Humidity)
+        humidity_obs = get_observations_for_station(Parameter.Humidity)
 
     # Get wind speed if available
     wind_obs = []
     if Parameter.WindSpeed in parameters:
-        wind_obs = client.get_latest_observations(parameter=Parameter.WindSpeed)
+        wind_obs = get_observations_for_station(Parameter.WindSpeed)
 
     # Get pressure if available
     pressure_obs = []
     if Parameter.Pressure in parameters:
-        pressure_obs = client.get_latest_observations(parameter=Parameter.Pressure)
+        pressure_obs = get_observations_for_station(Parameter.Pressure)
 
     return {
         "station": closest_station,

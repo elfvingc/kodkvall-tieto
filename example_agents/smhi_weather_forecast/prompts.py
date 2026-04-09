@@ -21,7 +21,7 @@ def location_to_coordinates(location: str) -> dict:
         messages=[
             {
                 "role": "user",
-                "content": f"what is coordinates for {location}?", # Better prompt needed to get coordinates in correct format
+                "content": f"Provide the latitude and longitude for {location}, Sweden in JSON format with keys 'latitude' and 'longitude'. Only respond with valid JSON, no additional text.",
             },
         ]
     )
@@ -45,7 +45,13 @@ def forecast(weather_data: str) -> str:
         messages=[
             {
                 "role": "user",
-                "content": f"{weather_data}" # Better prompt needed.
+                "content": f"Analyze this weather data and provide an interesting forecast for the location. Include information about:
+1. Current weather conditions
+2. What activities this weather is good for
+3. Any seasonal considerations (like elk hunting season, mosquito activity, or tire changes)
+4. A fun weather fact related to this location or conditions
+
+Weather data: {weather_data}"
             },
         ]
     )
